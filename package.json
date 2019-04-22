@@ -2,7 +2,6 @@
   "name": "puppeteer-compare",
   "version": "0.0.1",
   "description": "Automatic performance compare tool",
-  "main": "src/index.js",
   "bin": "./bin/puppeteer-compare.js",
   "scripts": {
     "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
