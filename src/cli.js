@@ -18,11 +18,12 @@ try {
 
   program.parse(process.argv);
 
-  const preDefinedCommands = program.commands.map(c => c._name);
+  if (program.args.length < 2) {
+    throw new Error('There should be two urls as an arguments')
+  }
 
-  console.log('--  program.options=',  program.options);
-  console.log('--  program.args=',  program.args);
-  console.log('--  preDefinedCommands=',  preDefinedCommands);
+  const [firstUrl, secondUrl] = program.args;
+  console.log('Urls to compare:', JSON.stringify({firstUrl, secondUrl}, null, 2));
 
 } catch (error) {
   handleError(error, program.debug);
