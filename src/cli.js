@@ -5,6 +5,7 @@ const updateNotifier = require('update-notifier');
 const pkg = require('../package.json');
 const videoWithWebRTC = require('./videoWithWebRTC');
 const traceWithScreenshots = require('./traceWithScreeshots');
+const ora = require('ora');
 
 const handleError = require('./handler-error');
 
@@ -24,11 +25,20 @@ try {
     throw new Error('There should be two urls as an arguments')
   }
 
-  const [firstUrl] = program.args;
+  (async () => {
+    const [firstUrl] = program.args;
+    const spinner = ora('Process your url...').start();
 
-  traceWithScreenshots(firstUrl);
+    try {
+      await Promise.all([traceWithScreenshots(firstUrl), videoWithWebRTC(firstUrl)]);
+    } catch(e) {
+      console.error('Error:', e);
+    }
 
-  videoWithWebRTC(firstUrl);
+    spinner.text = 'Screenshots are taken';
+    spinner.succeed();
+    spinner.stop();
+  })()
 
 } catch (error) {
   handleError(error, program.debug);
