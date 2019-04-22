@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "bin": "./bin/puppeteer-compare.js",
   "scripts": {
+    "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "contributors": [
