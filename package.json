@@ -4,7 +4,7 @@
   "description": "Automatic performance compare tool",
   "bin": "./bin/puppeteer-compare.js",
   "scripts": {
-    "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
+    "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "contributors": [
