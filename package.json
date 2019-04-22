@@ -1,0 +1,41 @@
+{
+  "name": "puppeteer-compare",
+  "version": "0.0.1",
+  "description": "Automatic performance compare tool",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "contributors": [
+    {
+      "name": "Vitalii Sashyn",
+      "email": "vitaliis@wix.com"
+    },
+    {
+      "name": "Serhii Sydoruk",
+      "email": "sehiis@wix.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-incubator/puppeteer-compare.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "compare",
+    "automatic",
+    "chrome",
+    "screencast",
+    "wix"
+  ],
+  "author": "Wix Incubator",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wix-incubator/puppeteer-compare/issues"
+  },
+  "homepage": "https://github.com/wix-incubator/puppeteer-compare#readme",
+  "dependencies": {
+    "commander": "^2.20.0",
+    "puppeteer": "^1.14.0"
+  }
+}
