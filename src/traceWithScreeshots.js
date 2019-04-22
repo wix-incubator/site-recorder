@@ -1,5 +1,6 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const puppeteer = require('puppeteer');
+const leftPad = require('left-pad');
 
 module.exports = async (url) => {
   const browser = await puppeteer.launch();
@@ -13,15 +14,22 @@ module.exports = async (url) => {
 
   await browser.close();
   const traceJson = require('../tmp/trace.json');
-  const tracedScreenshots = traceJson.traceEvents.filter(e => e.name === 'Screenshot').map(el => el.args.snapshot);
-  tracedScreenshots.forEach((screenshotBase64, i) => {
-    const base64Data = screenshotBase64.replace(/^data:image\/png;base64,/, "");
+  const traceScreenshots = traceJson.traceEvents.filter(x => (
+      x.cat === 'disabled-by-default-devtools.screenshot' &&
+      x.name === 'Screenshot' &&
+      typeof x.args !== 'undefined' &&
+      typeof x.args.snapshot !== 'undefined'
+  ));
+  const writeFilePromises = [];
+  const pad = traceScreenshots.length.toString().length;
+  traceScreenshots.forEach(function(snap, index) {
+    writeFilePromises.push(fs.writeFile(`tmp/screenshot${leftPad(index, pad, '0')}.jpeg`, snap.args.snapshot, 'base64'))
+  })
 
-    fs.writeFile(`tmp/screenshot${i}.png`, base64Data, 'base64', function(err) {
-      if (err) {
-        console.error('error', err);
-      }
-    });
-  });
-
+  try {
+      await Promise.all(writeFilePromises);
+      console.log('All files are written');
+    } catch(err) {
+      console.error(err);
+  }
 };

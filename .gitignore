@@ -83,7 +83,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-
+tmp/
 # TypeScript v1 declaration files
 typings/
 
@@ -446,4 +446,3 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder
 .mfractor/
-
