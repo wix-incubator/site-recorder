@@ -1,28 +1,31 @@
-const fs = require('fs');
-const gs = require('glob-stream');
-const jimp = require('jimp');
-const JPEGDecoder = require('jpg-stream/decoder');
-const JPEGEncoder = require('jpg-stream/encoder');
-const GIFEncoder = require('gifencoder');
-const pngFileStream = require('png-file-stream');
 const glob = require('glob');
-const encoder = new GIFEncoder(854, 480);
 
-module.exports = async (arg) => {
-  // convert a PNG to a JPEG
+const getPixels = require('get-pixels')
+const GifEncoder = require('gif-encoder');
+const gif = new GifEncoder(498, 374);
+const file = require('fs').createWriteStream('mygif.gif');
 
-  glob('tmp/**.jpeg', async (error, files) => {
-    if (error) {
-      console.error(error);
-      process.exit(1);
+gif.pipe(file);
+gif.setQuality(20);
+gif.setDelay(100);
+gif.writeHeader();
+
+const addToGif = function(images, counter = 0) {
+  getPixels(images[counter], function(err, pixels) {
+    gif.addFrame(pixels.data);
+    gif.read();
+    if (counter === images.length - 1) {
+      gif.finish();
+    } else {
+      addToGif(images, ++counter);
     }
-    const promises = files.map(async file => {
-      const f = await jimp.read(file)
-      return await f.write(`tmp/${Math.random()}.png`)
-    })
-    await Promise.all(promises);
-    pngFileStream('tmp/**.png')
-      .pipe(encoder.createWriteStream({ repeat: -1, delay: 500, quality: 10 }))
-      .pipe(fs.createWriteStream('myanimated.gif'));
+  })
+}
+
+module.exports = async (globPattern) => {
+  // convert a PNG to a JPEG
+  glob(globPattern, async (error, files) => {
+    if(error) throw error;
+    addToGif(files)
   })
 }

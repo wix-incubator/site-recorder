@@ -89,7 +89,6 @@ typings/
 
 # Optional npm cache directory
 .npm
-
 # Optional eslint cache
 .eslintcache
 
@@ -203,6 +202,8 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+# For generated GIF files
+*.gif
 
 # Chutzpah Test files
 _Chutzpah*
