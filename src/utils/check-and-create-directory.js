@@ -1,22 +1,19 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 
 /**
  * @param {string} directory
- * @returns {Promise<any>}
+ * @returns {Promise<void>}
  */
-function checkAndCreateDirectory(directory) {
-  return new Promise(function(resolve, reject) {
-    fs.stat(directory, function(err, stats) {
-      //Check if error defined and the error code is "not exists"
-      if (err && err.errno === 34) {
-        //Create the directory, call the callback.
-        fs.mkdir(directory, resolve);
-      } else {
-        //just in case there was a different error:
-        reject(err)
-      }
-    });
-  });
+async function checkAndCreateDirectory(directory) {
+  try {
+    await fs.stat(directory);
+  } catch (err) {
+    if (err && err.code === 'ENOENT') {
+      await fs.mkdir(directory);
+    } else {
+      throw new Error(err);
+    }
+  }
 }
 
 module.exports = checkAndCreateDirectory;

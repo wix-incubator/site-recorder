@@ -6,7 +6,10 @@ const fs = require('fs').promises;
 const leftPad = require('left-pad');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
-const jpegToGif = require('./jpeg-to-gif');
+const convertSnapshotTimeToRelative = require('./utils/convert-snapshot-time-to-relative');
+const checkAndCreateDirectory = require('./utils/check-and-create-directory');
+const median = require('./utils/median');
+const jpegToGifConverter = require('./jpeg-to-gif');
 const traceWithScreenshots = require('./traceWithScreeshots');
 
 
@@ -28,53 +31,75 @@ try {
 
   (async () => {
     const [firstUrl] = program.args;
-    const spinner = ora('Process your url...').start();
+    const spinner = ora();
+
 
     try {
-      const workdir = '/tmp'; // await tempdir();
-      const traceJsonPath = await traceWithScreenshots(firstUrl, workdir);
-      const traceJson = require(traceJsonPath);
-      const convertSnapshotTimeToRelative = (traceEvent, index, allTraceEvents) => {
-        let relativeTime = index === 0 ? 0: traceEvent.ts - allTraceEvents[index - 1].ts;
+      const workdir = 'tmp'; // await tempdir();
 
-        return {
-          ...traceEvent,
-          time: relativeTime
+      console.log(`Process your url: ${firstUrl}`);
+      try {
+        await checkAndCreateDirectory(`./${workdir}`);
+      } catch (error) {
+        if (error) {
+          console.log("failed to check and create directory:", error);
+          throw new Error(error);
         }
-      };
+      }
 
-      const traceScreenshots = traceJson.traceEvents.map(convertSnapshotTimeToRelative).filter(x => (
+
+      spinner.text = 'Puppeteer generating trace JSON...';
+      spinner.start();
+      const {traceJsonPath, performanceData} = await traceWithScreenshots(firstUrl, workdir);
+      spinner.text = 'Puppeteer trace JSON ready!';
+      spinner.succeed();
+      spinner.stop();
+
+      console.log('--  performanceData=',  performanceData);
+      spinner.text = 'Converting trace JSON to screenshots jpeg files...';
+      spinner.start();
+      const traceJson = require(traceJsonPath);
+      const traceScreenshots = convertSnapshotTimeToRelative(traceJson.traceEvents).filter(x => (
         x.cat === 'disabled-by-default-devtools.screenshot' &&
         x.name === 'Screenshot' &&
         typeof x.args !== 'undefined' &&
         typeof x.args.snapshot !== 'undefined'
-      ));
-      const pad = traceScreenshots.length.toString().length;
-
-      const generatedFiles = [];
-
-      const writeFilePromises = traceScreenshots.map((snap, index) => {
-        const fileName = `${workdir}/screenshot${leftPad(index, pad, '0')}.jpeg`;
-        const result = {
-          screenshot: snap.args.snapshot,
-          time: snap.time,
-        };
-
-        console.log('--  result=',  result);
-
-        generatedFiles.push(fileName);
-        return fs.writeFile(fileName, result.screenshot, 'base64');
+      )).map((snap, index, array) => {
+        return {
+          ...snap,
+          timeDiffWithPrev: index === 0 ? 0 : snap.timeFromStart - array[index - 1].timeFromStart
+        }
       });
 
-      console.log('generated file paths', generatedFiles);
+      const medianFps = median(traceScreenshots.map(el => el.timeDiffWithPrev));
+      const traceSessionDuration = traceScreenshots[traceScreenshots.length - 1].timeFromStart;
+      console.log('--  traceSessionDuration, medianFps: ', traceSessionDuration, medianFps);
+
+
+      const pad = traceScreenshots.length.toString().length;
+
+      const writeFilePromises = traceScreenshots.map((snap, index) => {
+        const fileName = `./${workdir}/screenshot${String(index).padStart(pad, '0')}.jpeg`;
+        return fs.writeFile(fileName, snap.args.snapshot, 'base64');
+      });
 
       await Promise.all(writeFilePromises);
-      jpegToGif(`${workdir}/**.jpeg`);
-    } catch(e) {
+      spinner.text = 'Screenshots generated!';
+      spinner.succeed();
+      spinner.stop();
+
+
+      spinner.text = 'Converting screenshots files to GIF';
+      spinner.start();
+      await jpegToGifConverter(`./${workdir}/**.jpeg`);
+      spinner.text = 'GIF is created!';
+      spinner.succeed();
+      spinner.stop();
+    } catch (e) {
       console.error('Error:', e);
     }
 
-    spinner.text = 'Screenshots are taken';
+    spinner.text = 'All is done, search for .gif files';
     spinner.succeed();
     spinner.stop();
   })()
