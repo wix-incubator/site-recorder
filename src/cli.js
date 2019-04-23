@@ -6,6 +6,7 @@ const fs = require('fs').promises;
 const leftPad = require('left-pad');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
+const jpegToGif = require('./jpeg-to-gif');
 const traceWithScreenshots = require('./traceWithScreeshots');
 
 
@@ -33,7 +34,16 @@ try {
       const workdir = '/tmp'; // await tempdir();
       const traceJsonPath = await traceWithScreenshots(firstUrl, workdir);
       const traceJson = require(traceJsonPath);
-      const traceScreenshots = traceJson.traceEvents.filter(x => (
+      const convertSnapshotTimeToRelative = (traceEvent, index, allTraceEvents) => {
+        let relativeTime = index === 0 ? 0: traceEvent.ts - allTraceEvents[index - 1].ts;
+
+        return {
+          ...traceEvent,
+          time: relativeTime
+        }
+      };
+
+      const traceScreenshots = traceJson.traceEvents.map(convertSnapshotTimeToRelative).filter(x => (
         x.cat === 'disabled-by-default-devtools.screenshot' &&
         x.name === 'Screenshot' &&
         typeof x.args !== 'undefined' &&
@@ -42,10 +52,18 @@ try {
       const pad = traceScreenshots.length.toString().length;
 
       const generatedFiles = [];
+
       const writeFilePromises = traceScreenshots.map((snap, index) => {
         const fileName = `${workdir}/screenshot${leftPad(index, pad, '0')}.jpeg`;
+        const result = {
+          screenshot: snap.args.snapshot,
+          time: snap.time,
+        };
+
+        console.log('--  result=',  result);
+
         generatedFiles.push(fileName);
-        return fs.writeFile(fileName, snap.args.snapshot, 'base64');
+        return fs.writeFile(fileName, result.screenshot, 'base64');
       });
 
       console.log('generated file paths', generatedFiles);
