@@ -5,7 +5,6 @@ const ora = require('ora');
 const fs = require('fs').promises;
 const leftPad = require('left-pad');
 const pkg = require('../package.json');
-const removeDirectory = require('./utils/remove-directory');
 const handleError = require('./utils/handler-error');
 const traceWithScreenshots = require('./traceWithScreeshots');
 
@@ -32,7 +31,6 @@ try {
 
     try {
       const workdir = '/tmp'; // await tempdir();
-      await removeDirectory(workdir);
       const traceJsonPath = await traceWithScreenshots(firstUrl, workdir);
       const traceJson = require(traceJsonPath);
       const traceScreenshots = traceJson.traceEvents.filter(x => (
