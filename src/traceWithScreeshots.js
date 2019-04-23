@@ -1,6 +1,9 @@
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer');
 const leftPad = require('left-pad');
+const GIFEncoder = require('gifencoder');
+
+const jpegToGif = require('./jpeg-to-gif');
 
 module.exports = async (url) => {
   const browser = await puppeteer.launch();
@@ -28,6 +31,7 @@ module.exports = async (url) => {
 
   try {
       await Promise.all(writeFilePromises);
+      jpegToGif('../tmp/**.jpeg');
       console.log('All files are written');
     } catch(err) {
       console.error(err);
