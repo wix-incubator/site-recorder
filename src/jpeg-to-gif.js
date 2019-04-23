@@ -6,7 +6,7 @@ const gif = new GifEncoder(498, 374);
 const file = require('fs').createWriteStream('mygif.gif');
 
 gif.pipe(file);
-gif.setQuality(20);
+gif.setQuality(1); // 1 for best quality colors
 gif.setDelay(100);
 gif.writeHeader();
 

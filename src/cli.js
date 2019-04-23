@@ -69,9 +69,7 @@ try {
       console.log('generated file paths', generatedFiles);
 
       await Promise.all(writeFilePromises);
-      jpegToGif(`..${workdir}/**.jpeg`);
-      console.log('All files are written');
-
+      jpegToGif(`${workdir}/**.jpeg`);
     } catch(e) {
       console.error('Error:', e);
     }
