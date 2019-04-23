@@ -1,39 +1,34 @@
-const fs = require('fs').promises;
 const puppeteer = require('puppeteer');
-const leftPad = require('left-pad');
-const GIFEncoder = require('gifencoder');
+const checkAndCreateDirectory = require('./utils/check-and-create-directory');
 
-const jpegToGif = require('./jpeg-to-gif');
+/**
+ * @param {string} url - with puppeteer will "trace"
+ * @param {string} workDir - directory path where trace.json will be saved
+ * @returns {Promise<string>} - resolves to traceJsonPath
+ */
 
-module.exports = async (url) => {
+async function traceWithScreenshots(url, workDir) {
+  try {
+    await checkAndCreateDirectory(workDir);
+  } catch (error) {
+    if (error) {
+      console.log("failed to check and create directory:", error);
+      throw new Error(error);
+    }
+  }
+
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page._client.send('Emulation.clearDeviceMetricsOverride');
-  await page.tracing.start({path: 'tmp/trace.json', screenshots: true});
+  await page.tracing.start({path: `${workDir}/trace.json`, screenshots: true});
   await page.goto(url, {waitUntil: 'networkidle2'});
   await page.setBypassCSP(true);
   await page.tracing.stop();
   await page.close();
 
   await browser.close();
-  const traceJson = require('../tmp/trace.json');
-  const traceScreenshots = traceJson.traceEvents.filter(x => (
-      x.cat === 'disabled-by-default-devtools.screenshot' &&
-      x.name === 'Screenshot' &&
-      typeof x.args !== 'undefined' &&
-      typeof x.args.snapshot !== 'undefined'
-  ));
-  const writeFilePromises = [];
-  const pad = traceScreenshots.length.toString().length;
-  traceScreenshots.forEach(function(snap, index) {
-    writeFilePromises.push(fs.writeFile(`tmp/screenshot${leftPad(index, pad, '0')}.jpeg`, snap.args.snapshot, 'base64'))
-  })
 
-  try {
-      await Promise.all(writeFilePromises);
-      jpegToGif('../tmp/**.jpeg');
-      console.log('All files are written');
-    } catch(err) {
-      console.error(err);
-  }
-};
+  return `..${workDir}/trace.json`;
+}
+
+module.exports = traceWithScreenshots;

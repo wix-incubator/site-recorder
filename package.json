@@ -7,6 +7,9 @@
     "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": ">=6.5.0"
+  },
   "contributors": [
     {
       "name": "Vitalii Sashyn",
@@ -38,6 +41,7 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
+    "fs-extra": "^7.0.1",
     "gifencoder": "^2.0.1",
     "glob": "^7.1.3",
     "glob-stream": "^6.1.0",
@@ -47,6 +51,8 @@
     "ora": "^3.4.0",
     "png-file-stream": "^1.2.1",
     "puppeteer": "^1.14.0",
+    "rimraf": "^2.6.3",
+    "tempdir": "^2.0.0",
     "update-notifier": "^2.5.0"
   }
 }

@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
-const { spawn } = require('child_process');
 const program = require('commander');
 const updateNotifier = require('update-notifier');
-const pkg = require('../package.json');
-const videoWithWebRTC = require('./videoWithWebRTC');
-const traceWithScreenshots = require('./traceWithScreeshots');
 const ora = require('ora');
+const fs = require('fs').promises;
+const leftPad = require('left-pad');
+const pkg = require('../package.json');
+const removeDirectory = require('./utils/remove-directory');
+const handleError = require('./utils/handler-error');
+const traceWithScreenshots = require('./traceWithScreeshots');
 
-const handleError = require('./handler-error');
 
 updateNotifier({ pkg }).notify();
 
@@ -30,7 +31,31 @@ try {
     const spinner = ora('Process your url...').start();
 
     try {
-      await Promise.all([traceWithScreenshots(firstUrl), videoWithWebRTC(firstUrl)]);
+      const workdir = '/tmp'; // await tempdir();
+      await removeDirectory(workdir);
+      const traceJsonPath = await traceWithScreenshots(firstUrl, workdir);
+      const traceJson = require(traceJsonPath);
+      const traceScreenshots = traceJson.traceEvents.filter(x => (
+        x.cat === 'disabled-by-default-devtools.screenshot' &&
+        x.name === 'Screenshot' &&
+        typeof x.args !== 'undefined' &&
+        typeof x.args.snapshot !== 'undefined'
+      ));
+      const pad = traceScreenshots.length.toString().length;
+
+      const generatedFiles = [];
+      const writeFilePromises = traceScreenshots.map((snap, index) => {
+        const fileName = `${workdir}/screenshot${leftPad(index, pad, '0')}.jpeg`;
+        generatedFiles.push(fileName);
+        return fs.writeFile(fileName, snap.args.snapshot, 'base64');
+      });
+
+      console.log('generated file paths', generatedFiles);
+
+      await Promise.all(writeFilePromises);
+      jpegToGif(`..${workdir}/**.jpeg`);
+      console.log('All files are written');
+
     } catch(e) {
       console.error('Error:', e);
     }
