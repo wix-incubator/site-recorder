@@ -11,7 +11,7 @@ PROJECT_NAME uses a number of open source projects to work properly:
 * [puppeteer](https://github.com/GoogleChrome/puppeteer) - Puppeteer is a Node library which provides a high-level API to control Chrome or Chromium over the DevTools Protocol.
 * [Commander.js](https://github.com/tj/commander.js) - The complete solution for node.js command-line interfaces.
 * [ffmpeg](https://ffmpeg.org/) - A complete, cross-platform solution to record, convert and stream audio and video.
-* [node-fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg) - A fluent Node.js API to FFMPEG.
+* [videoshow](https://github.com/h2non/videoshow) - Simple node.js utility to create video slideshows from images with optional audio and visual effects using ffmpeg.
 * [gif-encoder](https://www.npmjs.com/package/gif-encoder) - Streaming GIF encoder
     
 And of course PROJECT_NAME itself is open source with a [public repository](https://github.com/wix-incubator/puppeteer-compare) on GitHub.

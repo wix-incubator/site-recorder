@@ -12,7 +12,6 @@ gif.setQuality(10);
 gif.writeHeader();
 
 const asyncGetPixels = util.promisify(getPixels);
-const asyncGlob = util.promisify(glob);
 
 /**
  * @param {Object[]} files -Files pathes with time delay
@@ -24,7 +23,7 @@ async function addToGif(files) {
     for(let i = 0; i < files.length; i++) {
       const pixels = await asyncGetPixels(files[i].fileName);
       gif.addFrame(pixels.data);
-      gif.setDelay(files[i].timeDiffWithPrev / 1000 )
+      gif.setDelay(files[i].timeDiffWithPrev / 1000 );
       gif.read();
     }
     gif.finish();

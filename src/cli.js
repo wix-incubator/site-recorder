@@ -5,9 +5,10 @@ const ora = require('ora');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
 const checkAndCreateDirectory = require('./utils/check-and-create-directory');
-const jpegToGifConverter = require('./jpeg-to-gif');
 const traceWithScreenshots = require('./trace-with-screeshots');
 const extractScreenshotsToJpegFiles = require('./extract-screenshots-to-jpeg-files');
+const jpegToGifConverter = require('./jpeg-to-gif');
+const jpegToVideoConverter = require('./jpeg-to-video');
 
 
 updateNotifier({ pkg }).notify();
@@ -34,11 +35,14 @@ try {
 
 
     try {
-      const workdir = 'tmp'; // await tempdir();
+      const workDir = 'tmp'; // await tempdir();
+      const traceScreenshotsDir = `${workDir}/trace-screenshots`;
+      // const puppeteerScreenshotsDir = `${workDir}/ppptr-screenshots`;
 
       console.log(`Process your url: ${firstUrl}`);
       try {
-        await checkAndCreateDirectory(`./${workdir}`);
+        await checkAndCreateDirectory(`./${workDir}`);
+        await checkAndCreateDirectory(`./${traceScreenshotsDir}`);
       } catch (error) {
         if (error) {
           console.log("failed to check and create directory:", error);
@@ -50,7 +54,7 @@ try {
       spinner.text = 'Puppeteer generating trace JSON...';
       spinner.start();
 
-      const {traceJsonPath, performanceData} = await traceWithScreenshots(firstUrl, workdir);
+      const {traceJsonPath, performanceData} = await traceWithScreenshots(firstUrl, workDir);
 
       console.log('--  performanceData=',  performanceData);
       spinner.text = 'Puppeteer trace JSON ready!';
@@ -61,7 +65,7 @@ try {
       spinner.text = 'Converting trace JSON to screenshots jpeg files...';
       spinner.start();
 
-      const files = await extractScreenshotsToJpegFiles(traceJsonPath, workdir);
+      const screenshotsResult = await extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir);
 
       spinner.text = 'Screenshots generated!';
       spinner.succeed();
@@ -72,9 +76,20 @@ try {
         spinner.text = 'Converting screenshots files to GIF';
         spinner.start();
 
-        await jpegToGifConverter(files);
+        await jpegToGifConverter(screenshotsResult.files);
 
         spinner.text = 'GIF is created!';
+        spinner.succeed();
+        spinner.stop();
+      }
+
+      if (program.generateVideo) {
+        spinner.text = 'Converting screenshots files to video';
+        spinner.start();
+
+        await jpegToVideoConverter(screenshotsResult.files);
+
+        spinner.text = 'video.mp4 is created!';
         spinner.succeed();
         spinner.stop();
       }

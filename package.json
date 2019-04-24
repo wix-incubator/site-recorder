@@ -44,7 +44,6 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
-    "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^7.0.1",
     "get-pixels": "^3.3.2",
     "gif-encoder": "^0.7.2",
@@ -53,6 +52,7 @@
     "puppeteer": "^1.14.0",
     "rimraf": "^2.6.3",
     "tempdir": "^2.0.0",
-    "update-notifier": "^2.5.0"
+    "update-notifier": "^2.5.0",
+    "videoshow": "^0.1.11"
   }
 }

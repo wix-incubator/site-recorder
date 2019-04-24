@@ -4,12 +4,17 @@ const checkAndCreateDirectory = require('./utils/check-and-create-directory');
 const convertSnapshotTimeToRelative = require('./utils/convert-snapshot-time-to-relative');
 
 
-async function extractScreenshotsToJpegFiles(traceJsonPath, workdir) {
+/**
+ *
+ * @param {string} traceJsonPath - directory where trace.json is located
+ * @param {string} traceScreenshotsDir - directory where screenshots will be generated
+ * @returns {Promise<{medianFps: number, totalSessionDuration: number, screenshotsFileNamePad: number, files: {fileName: string, timeDiffWithPrev: number}[]}>}
+ */
+async function extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir) {
   const traceJson = require(traceJsonPath);
-  const screenshotsFolder = `./${workdir}/trace-screenshots`;
 
   try {
-    await checkAndCreateDirectory(screenshotsFolder);
+    await checkAndCreateDirectory(traceScreenshotsDir);
   } catch (error) {
     if (error) {
       console.log("failed to check and create directory:", error);
@@ -25,17 +30,14 @@ async function extractScreenshotsToJpegFiles(traceJsonPath, workdir) {
   )).map((snap, index, array) => {
     return {
       ...snap,
-      timeDiffWithPrev: index === 0 ? 0 : snap.timeFromStart - array[index - 1].timeFromStart
+      timeDiffWithPrev: index === 0 ? snap.timeFromStart : snap.timeFromStart - array[index - 1].timeFromStart
     }
   });
 
-  const medianFps = median(traceScreenshots.map(el => el.timeDiffWithPrev));
-  const traceSessionDuration = traceScreenshots[traceScreenshots.length - 1].timeFromStart;
-
-  const pad = traceScreenshots.length.toString().length;
+  const screenshotsFileNamePad = traceScreenshots.length.toString().length;
 
   const writeFilePromises = traceScreenshots.map(async (snap, index) => {
-    const fileName = `${screenshotsFolder}/screenshot${String(index).padStart(pad, '0')}.jpeg`;
+    const fileName = `${traceScreenshotsDir}/screenshot${String(index).padStart(screenshotsFileNamePad, '0')}.jpeg`;
     await fs.writeFile(fileName, snap.args.snapshot, 'base64');
     return {
       fileName,
@@ -47,8 +49,8 @@ async function extractScreenshotsToJpegFiles(traceJsonPath, workdir) {
 
   return {
     files,
-    medianFps,
-    traceSessionDuration
+    medianFps: median(traceScreenshots.map(el => el.timeDiffWithPrev)),
+    totalSessionDuration: traceScreenshots[traceScreenshots.length - 1].timeFromStart,
   };
 }
 
