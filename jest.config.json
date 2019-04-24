@@ -1,0 +1,6 @@
+{
+  "name": "puppeteer-compare",
+  "jest": {
+    "verbose": true
+  }
+}
