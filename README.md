@@ -18,7 +18,10 @@ And of course PROJECT_NAME itself is open source with a [public repository](http
 
 ### Using of artifacts
 
-Simple performance metrics are extracted by default, to analyze in depth you can upload generated trace.json to Chrome Trace Viewer: `chrome://tracing/` (copy-paste this to the browser address bar).
+Simple performance metrics are extracted by default.
+ 
+To analyze in depth you can upload generated trace.json to Chrome Trace Viewer: `chrome://tracing/` (copy-paste this to the browser address bar).
+You can read more about the "Trace Event Profiling Tool" [here](http://dev.chromium.org/developers/how-tos/trace-event-profiling-tool).
 
 ### Installation
 
