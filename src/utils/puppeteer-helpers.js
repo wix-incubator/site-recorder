@@ -11,7 +11,7 @@ const extractDataFromPerformanceTiming = (timing, ...dataNames) => {
 };
 
 const getTimeFromPerformanceMetrics = (metrics, name) =>
-  metrics.metrics.find(x => x.name === name).value * 1000;
+  Math.round(metrics.metrics.find(x => x.name === name).value * 1000);
 
 const extractDataFromPerformanceMetrics = (metrics, ...dataNames) => {
   const navigationStart = getTimeFromPerformanceMetrics(
