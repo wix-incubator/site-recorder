@@ -14,11 +14,11 @@ PROJECT_NAME uses a number of open source projects to work properly:
 * [node-fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg) - A fluent Node.js API to FFMPEG.
 * [gif-encoder](https://www.npmjs.com/package/gif-encoder) - Streaming GIF encoder
     
-And of course PROJECT_NAME itself is open source with a [public repository][https://github.com/wix-incubator/puppeteer-compare] on GitHub.
+And of course PROJECT_NAME itself is open source with a [public repository](https://github.com/wix-incubator/puppeteer-compare) on GitHub.
 
 ### Using of artifacts
 
-Simple performance metrics are extracted by default, to analyze in depth you can upload generated trace.json to [Chrome Trace Viewer](chrome://tracing/).
+Simple performance metrics are extracted by default, to analyze in depth you can upload generated trace.json to Chrome Trace Viewer: `chrome://tracing/` (copy-paste this to the browser address bar).
 
 ### Installation
 
