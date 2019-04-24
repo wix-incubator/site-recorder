@@ -16,6 +16,10 @@ PROJECT_NAME uses a number of open source projects to work properly:
     
 And of course PROJECT_NAME itself is open source with a [public repository][https://github.com/wix-incubator/puppeteer-compare] on GitHub.
 
+### Using of artifacts
+
+Simple performance metrics are extracted by default, to analyze in depth you can upload generated trace.json to [Chrome Trace Viewer](chrome://tracing/).
+
 ### Installation
 
 PROJECT_NAME requires [Node.js](https://nodejs.org/) v8+ to run.
