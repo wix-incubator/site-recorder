@@ -3,7 +3,6 @@ const program = require('commander');
 const updateNotifier = require('update-notifier');
 const ora = require('ora');
 const fs = require('fs').promises;
-const leftPad = require('left-pad');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
 const convertSnapshotTimeToRelative = require('./utils/convert-snapshot-time-to-relative');
@@ -78,12 +77,16 @@ try {
 
       const pad = traceScreenshots.length.toString().length;
 
-      const writeFilePromises = traceScreenshots.map((snap, index) => {
+      const writeFilePromises = traceScreenshots.map(async (snap, index) => {
         const fileName = `./${workdir}/screenshot${String(index).padStart(pad, '0')}.jpeg`;
-        return fs.writeFile(fileName, snap.args.snapshot, 'base64');
+        await fs.writeFile(fileName, snap.args.snapshot, 'base64');
+        return {
+          fileName,
+          timeDiffWithPrev: snap.timeDiffWithPrev,
+        }
       });
 
-      await Promise.all(writeFilePromises);
+      const files = await Promise.all(writeFilePromises);
       spinner.text = 'Screenshots generated!';
       spinner.succeed();
       spinner.stop();
@@ -91,7 +94,7 @@ try {
 
       spinner.text = 'Converting screenshots files to GIF';
       spinner.start();
-      await jpegToGifConverter(`./${workdir}/**.jpeg`);
+      await jpegToGifConverter(files);
       spinner.text = 'GIF is created!';
       spinner.succeed();
       spinner.stop();

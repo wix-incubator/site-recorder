@@ -8,35 +8,38 @@ const gif = new GifEncoder(498, 374);
 const file = fs.createWriteStream('mygif.gif');
 
 gif.pipe(file);
-gif.setQuality(1); // 1 for best quality colors
-gif.setDelay(100);
+gif.setQuality(10);
 gif.writeHeader();
 
 const asyncGetPixels = util.promisify(getPixels);
 const asyncGlob = util.promisify(glob);
 
-async function addToGif(images, counter = 0) {
+/**
+ * @param {Object[]} files -Files pathes with time delay
+ * @param {string} files[].fileName - path where jpeg files is located
+ * @param {number} files[].timeDiffWithPrev - time for delay from previous frame in microseconds
+ */
+async function addToGif(files) {
   try {
-    const pixels = await asyncGetPixels(images[counter]);
-    gif.addFrame(pixels.data);
-    gif.read();
-
-    if (counter === images.length - 1) {
-      gif.finish();
-    } else {
-      await addToGif(images, ++counter);
+    for(let i = 0; i < files.length; i++) {
+      const pixels = await asyncGetPixels(files[i].fileName);
+      gif.addFrame(pixels.data);
+      gif.setDelay(files[i].timeDiffWithPrev / 1000 )
+      gif.read();
     }
+    gif.finish();
   } catch (error) {
     throw error;
   }
 }
 
 /**
- * @param {string} globPattern - path where jpeg files is located
+ * @param {Object[]} files -Files pathes with time delay
+ * @param {string} files[].fileName - path where jpeg files is located
+ * @param {number} files[].timeDiffWithPrev - time for delay from previous frame in microseconds
  */
-async function jpegToGifConverter(globPattern) {
+async function jpegToGifConverter(files) {
   try {
-    const files = await asyncGlob(globPattern);
     await addToGif(files);
   } catch (error) {
     throw error;
