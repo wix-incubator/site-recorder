@@ -16,6 +16,12 @@ PROJECT_NAME uses a number of open source projects to work properly:
     
 And of course PROJECT_NAME itself is open source with a [public repository](https://github.com/wix-incubator/puppeteer-compare) on GitHub.
 
+### Prerequisites 
+
+PROJECT_NAME requires:
+* [Node.js](https://nodejs.org/) v8+;
+* [ffmpeg](https://ffmpeg.org/) installed (for mac os: `brew install ffmpeg`).
+
 ### Using of artifacts
 
 Simple performance metrics are extracted by default.
@@ -24,8 +30,6 @@ To analyze in depth you can upload generated trace.json to Chrome Trace Viewer: 
 You can read more about the "Trace Event Profiling Tool" [here](http://dev.chromium.org/developers/how-tos/trace-event-profiling-tool).
 
 ### Installation
-
-PROJECT_NAME requires [Node.js](https://nodejs.org/) v8+ to run.
 
 Install the dependencies and devDependencies and start the server.
 

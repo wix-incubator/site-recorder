@@ -19,6 +19,7 @@ try {
     .usage('[options] <url1 ...> <url2 ...>')
     .arguments('[module]', 'prints module version from the node_modules')
     .option('-d, --debug', 'see full error messages, mostly for debugging')
+    .option('--use-existed-trace-json', 'use already generated trace.json')
     .option('--generate-gif', 'should gif be generated')
     .option('--generate-video', 'should video be generated')
     .option('--disable-colors', 'minimize color and styling usage in output');
@@ -50,17 +51,22 @@ try {
         }
       }
 
+      let traceJsonPath = `../${workDir}/trace.json`;
+      let performanceData = {};
+      if (!program.useExistedTraceJson) {
+console.log('--  program=',  program);
+        spinner.text = 'Puppeteer generating trace JSON...';
+        spinner.start();
 
-      spinner.text = 'Puppeteer generating trace JSON...';
-      spinner.start();
+        const traceResults = await traceWithScreenshots(firstUrl, workDir);
+        traceJsonPath = traceResults.traceJsonPath;
+        performanceData = traceResults.performanceData;
 
-      const {traceJsonPath, performanceData} = await traceWithScreenshots(firstUrl, workDir);
-
-      console.log('--  performanceData=',  performanceData);
-      spinner.text = 'Puppeteer trace JSON ready!';
-      spinner.succeed();
-      spinner.stop();
-
+        console.log('--  performanceData=',  performanceData);
+        spinner.text = 'Puppeteer trace JSON ready!';
+        spinner.succeed();
+        spinner.stop();
+      }
 
       spinner.text = 'Converting trace JSON to screenshots jpeg files...';
       spinner.start();
@@ -87,7 +93,7 @@ try {
         spinner.text = 'Converting screenshots files to video';
         spinner.start();
 
-        await jpegToVideoConverter(screenshotsResult.files);
+        await jpegToVideoConverter(screenshotsResult.files, './video.pm4');
 
         spinner.text = 'video.mp4 is created!';
         spinner.succeed();
