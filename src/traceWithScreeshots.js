@@ -15,7 +15,7 @@ const {
  * @returns {Promise<{traceJsonPath: string, performanceData?:object }>}
  */
 
-async function traceWithScreenshots(url, workDir, options = {width: 1920, height: 1080, tracePerformance: true}) {
+async function traceWithScreenshots(url, workDir, options = {width: 1280, height: 720, tracePerformance: true}) {
   let performanceData = null;
   let client;
 
@@ -37,15 +37,9 @@ async function traceWithScreenshots(url, workDir, options = {width: 1920, height
   await page.goto(url, {waitUntil: 'networkidle2'});
 
   if (options.tracePerformance) {
-    const performanceTimingJSON = await page.evaluate(() => JSON.stringify(window.performance.timing, null, 2));
-    const performanceEntriesJSON = await page.evaluate(() => JSON.stringify(performance.getEntries(), null, 2));
+    // const performanceEntriesJSON = await page.evaluate(() => JSON.stringify(performance.getEntries(), null, 2));
     const performanceJSON = await page.evaluate(() => JSON.stringify(performance.toJSON(), null, 2));
     const puppeteerPageMetrics = await page.metrics();
-
-    console.log('--  performanceTimingJSON=',  performanceTimingJSON);
-    console.log('--  performanceEntriesJSON=',  performanceEntriesJSON);
-    console.log('--  performanceJSON=',  performanceJSON);
-    console.log('--  puppeteerPageMetrics=',  puppeteerPageMetrics);
 
     let firstMeaningfulPaint = 0;
     let performanceMetrics;
@@ -60,13 +54,18 @@ async function traceWithScreenshots(url, workDir, options = {width: 1920, height
       );
     }
 
-   performanceData = extractDataFromPerformanceTiming(
-     JSON.parse(performanceTimingJSON),
-     'responseEnd',
-     'domInteractive',
-     'domContentLoadedEventEnd',
-     'loadEventEnd',
-    );
+    performanceData = {
+      // performanceEntriesJSON: JSON.parse(performanceEntriesJSON),
+      performanceJSON: JSON.parse(performanceJSON),
+      puppeteerPageMetrics,
+      extractedDataFromPerformanceJson: extractDataFromPerformanceTiming(
+        JSON.parse(performanceJSON).timing,
+        'responseEnd',
+        'domInteractive',
+        'domContentLoadedEventEnd',
+        'loadEventEnd',
+      )
+    };
 
     performanceData.firstMeaningfulPaint = firstMeaningfulPaint;
     await page.tracing.stop();
