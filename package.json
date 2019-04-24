@@ -5,6 +5,9 @@
   "bin": "./bin/puppeteer-compare.js",
   "scripts": {
     "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1",
+    "example:gif": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 --generate-gif",
+    "example:video": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 --generate-video",
+    "example:full": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 --generate-video --generate-gif",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
