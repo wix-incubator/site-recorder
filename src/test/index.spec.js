@@ -6,7 +6,11 @@ const FILE_GIF = './mygif.gif';
 jest.setTimeout(20000000)
 
 test('Check that the new gif file is created', () => {
-  fs.unlinkSync(FILE_GIF) // before test remove gif if it's exists
+  try {
+    fs.accessSync(FILE_GIF); // check if file exists
+    fs.unlinkSync(FILE_GIF) // before test remove gif if it's exists
+  } catch (err) { // do nothing
+  }
 
   const child = spawn('node', ['./src/cli.js', 'http://ronnyr34.wixsite.com/mysite-1', '--generate-gif']);
 
