@@ -5,7 +5,7 @@ const ora = require('ora');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
 const checkAndCreateDirectory = require('./utils/check-and-create-directory');
-const traceWithScreenshots = require('./trace-with-screeshots');
+const puppeteerTraceWithScreenshots = require('./puppeteer-trace-with-screeshots');
 const extractScreenshotsToJpegFiles = require('./extract-screenshots-to-jpeg-files');
 const jpegToGifConverter = require('./jpeg-to-gif');
 const jpegToVideoConverter = require('./jpeg-to-video');
@@ -53,60 +53,30 @@ try {
 
       let traceJsonPath = `../${workDir}/trace.json`;
       let performanceData = {};
-      if (!program.useExistedTraceJson) {
-console.log('--  program=',  program);
-        spinner.text = 'Puppeteer generating trace JSON...';
-        spinner.start();
 
-        const traceResults = await traceWithScreenshots(firstUrl, workDir);
+      if (!program.useExistedTraceJson) {
+        const traceResults = await puppeteerTraceWithScreenshots(firstUrl, workDir, {width: 1280, height: 720, tracePerformance: false});
         traceJsonPath = traceResults.traceJsonPath;
         performanceData = traceResults.performanceData;
 
         console.log('--  performanceData=',  performanceData);
-        spinner.text = 'Puppeteer trace JSON ready!';
-        spinner.succeed();
-        spinner.stop();
       }
-
-      spinner.text = 'Converting trace JSON to screenshots jpeg files...';
-      spinner.start();
 
       const screenshotsResult = await extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir);
 
-      spinner.text = 'Screenshots generated!';
-      spinner.succeed();
-      spinner.stop();
-
-
       if (program.generateGif) {
-        spinner.text = 'Converting screenshots files to GIF';
-        spinner.start();
-
         await jpegToGifConverter(screenshotsResult.files);
-
-        spinner.text = 'GIF is created!';
-        spinner.succeed();
-        spinner.stop();
       }
 
       if (program.generateVideo) {
-        spinner.text = 'Converting screenshots files to video';
-        spinner.start();
-
-        await jpegToVideoConverter(screenshotsResult.files, './video.pm4');
-
-        spinner.text = 'video.mp4 is created!';
-        spinner.succeed();
-        spinner.stop();
+        await jpegToVideoConverter(screenshotsResult.files, screenshotsResult.medianFps, './video.pm4');
       }
 
-      spinner.text = 'All is done, search for .gif files';
-      spinner.succeed();
+      spinner.succeed('All is done, search for .gif files');
       spinner.stop();
     } catch (e) {
       console.error('Error:', e);
-      spinner.text = 'Something go wrong';
-      spinner.fail();
+      spinner.fail('Something go wrong');
       spinner.stop();
     }
   })()

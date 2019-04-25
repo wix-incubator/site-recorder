@@ -1,17 +1,18 @@
 const fs = require('fs').promises;
+const ora = require('ora');
 const median = require('./utils/median');
 const checkAndCreateDirectory = require('./utils/check-and-create-directory');
 const convertSnapshotTimeToRelative = require('./utils/convert-snapshot-time-to-relative');
 
 
 /**
- *
  * @param {string} traceJsonPath - directory where trace.json is located
  * @param {string} traceScreenshotsDir - directory where screenshots will be generated
- * @returns {Promise<{medianFps: number, totalSessionDuration: number, screenshotsFileNamePad: number, files: {fileName: string, timeDiffWithPrev: number}[]}>}
+ * @returns {Promise<{medianFps: number, files: {fileName: string, timeDiffWithPrev}[], totalSessionDuration: number}>}
  */
 async function extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir) {
   const traceJson = require(traceJsonPath);
+  const spinner = ora('Converting trace JSON to screenshots jpeg files...').start();
 
   try {
     await checkAndCreateDirectory(traceScreenshotsDir);
@@ -47,6 +48,9 @@ async function extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir)
 
   const files = await Promise.all(writeFilePromises);
 
+  spinner.text = 'Screenshots generated!';
+  spinner.succeed();
+  spinner.stop();
   return {
     files,
     medianFps: median(traceScreenshots.map(el => el.timeDiffWithPrev)),

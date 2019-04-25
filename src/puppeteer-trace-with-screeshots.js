@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer');
+const ora = require('ora');
+
 const {
   getTimeFromPerformanceMetrics,
   extractDataFromPerformanceTiming,
@@ -15,9 +17,10 @@ const {
  * @returns {Promise<{traceJsonPath: string, performanceData?:object }>}
  */
 
-async function traceWithScreenshots(url, workDir, options = {width: 1280, height: 720, tracePerformance: true}) {
+async function puppeteerTraceWithScreenshots(url, workDir, options = {width: 1280, height: 720, tracePerformance: true}) {
   let performanceData = null;
   let client;
+  const spinner = ora('Puppeteer generating trace JSON...').start();
 
   const browser = await puppeteer.launch({
     args : [
@@ -80,10 +83,13 @@ async function traceWithScreenshots(url, workDir, options = {width: 1280, height
 
   await browser.close();
 
+  spinner.succeed();
+  spinner.stop();
+
   return {
     traceJsonPath: `../${workDir}/trace.json`,
     ...(!!performanceData && { performanceData }),
   };
 }
 
-module.exports = traceWithScreenshots;
+module.exports = puppeteerTraceWithScreenshots;

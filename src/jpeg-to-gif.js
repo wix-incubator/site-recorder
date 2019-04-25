@@ -1,6 +1,6 @@
 const util = require('util');
 const fs = require('fs');
-const glob = require('glob');
+const ora = require('ora');
 const getPixels = require('get-pixels');
 const GifEncoder = require('gif-encoder');
 
@@ -38,9 +38,17 @@ async function addToGif(files) {
  * @param {number} files[].timeDiffWithPrev - time for delay from previous frame in microseconds
  */
 async function jpegToGifConverter(files) {
+  const spinner = ora('Converting screenshots files to GIF').start();
+
   try {
     await addToGif(files);
+    spinner.text = 'GIF is created!';
+    spinner.succeed();
+    spinner.stop();
   } catch (error) {
+    spinner.text = 'GIF generation is failed';
+    spinner.fail();
+    spinner.stop();
     throw error;
   }
 }
