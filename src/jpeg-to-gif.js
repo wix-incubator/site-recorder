@@ -14,6 +14,7 @@ gif.writeHeader();
 const asyncGetPixels = util.promisify(getPixels);
 
 /**
+ * Gets pixels from images and add them as frame to GIF
  * @param {Object[]} files -Files pathes with time delay
  * @param {string} files[].fileName - path where jpeg files is located
  * @param {number} files[].timeDiffWithPrev - time for delay from previous frame in microseconds
