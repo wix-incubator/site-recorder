@@ -6,9 +6,10 @@ const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
 const checkAndCreateDirectory = require('./utils/check-and-create-directory');
 const puppeteerTraceWithScreenshots = require('./puppeteer-trace-with-screeshots');
-const extractScreenshotsToJpegFiles = require('./extract-screenshots-to-jpeg-files');
+const traceJsonToJpeg = require('./trace-json-to-jpeg');
 const jpegToGifConverter = require('./jpeg-to-gif');
 const jpegToVideoConverter = require('./jpeg-to-video');
+const concatenateVideos = require('./concatenate-videos');
 
 
 updateNotifier({ pkg }).notify();
@@ -26,12 +27,13 @@ try {
 
   program.parse(process.argv);
 
-  // if (program.args.length < 2) {
-  //   throw new Error('There should be two urls as an arguments');
-  // }
+  if (program.args.length < 2) {
+    throw new Error('There should be two urls as an arguments');
+  }
+
+  const [firstUrl, secondUrl] = program.args;
 
   (async () => {
-    const [firstUrl] = program.args;
     const spinner = ora();
 
 
@@ -62,14 +64,15 @@ try {
         console.log('--  performanceData=',  performanceData);
       }
 
-      const screenshotsResult = await extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir);
+      const screenshotsResult = await traceJsonToJpeg(traceJsonPath, traceScreenshotsDir);
 
       if (program.generateGif) {
         await jpegToGifConverter(screenshotsResult.files);
       }
 
       if (program.generateVideo) {
-        await jpegToVideoConverter(screenshotsResult.files, screenshotsResult.medianFps, './video.pm4');
+        await jpegToVideoConverter(screenshotsResult.files, screenshotsResult.medianFps, `video.mp4`);
+        await concatenateVideos('video1.mp4', 'video2.mp4')
       }
 
       spinner.succeed('All is done, search for .gif files');
@@ -79,7 +82,7 @@ try {
       spinner.fail('Something go wrong');
       spinner.stop();
     }
-  })()
+  })();
 
 } catch (error) {
   handleError(error, program.debug);

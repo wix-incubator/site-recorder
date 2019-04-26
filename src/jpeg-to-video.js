@@ -37,20 +37,6 @@ async function jpegToVideoConverter(screenshotsFiles, fps, videoFilePath) {
   console.log('--  preparedImageData[5]=',  preparedImageData[5]);
 
   return new Promise((resolve, reject) => {
-    // ffmpeg(listFileName).inputFormat('concat')
-    //                     .on('progress', (progress) => {
-    //                       console.info(`[ffmpeg] ${JSON.stringify(progress)}`);
-    //                     })
-    //                     .on('error', (err) => {
-    //                       console.error(`[ffmpeg] error: ${err.message}`);
-    //                       reject(err);
-    //                     })
-    //                     .on('end', () => {
-    //                       console.log('[ffmpeg] finished');
-    //                       resolve();
-    //                     })
-    //                     .save('video.mp4');
-
     const begin = Date.now();
     ffmpeg()
       .input(listFileName)
@@ -69,7 +55,7 @@ async function jpegToVideoConverter(screenshotsFiles, fps, videoFilePath) {
         spinner.stop();
         resolve();
       })
-      .save('video.mp4');
+      .save(videoFilePath);
   });
 }
 

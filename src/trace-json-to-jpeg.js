@@ -10,7 +10,7 @@ const convertSnapshotTimeToRelative = require('./utils/convert-snapshot-time-to-
  * @param {string} traceScreenshotsDir - directory where screenshots will be generated
  * @returns {Promise<{medianFps: number, files: {fileName: string, timeDiffWithPrev}[], totalSessionDuration: number}>}
  */
-async function extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir) {
+async function traceJsonToJpeg(traceJsonPath, traceScreenshotsDir) {
   const traceJson = require(traceJsonPath);
   const spinner = ora('Converting trace JSON to screenshots jpeg files...').start();
 
@@ -58,4 +58,4 @@ async function extractScreenshotsToJpegFiles(traceJsonPath, traceScreenshotsDir)
   };
 }
 
-module.exports = extractScreenshotsToJpegFiles;
+module.exports = traceJsonToJpeg;
