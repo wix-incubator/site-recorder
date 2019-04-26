@@ -27,8 +27,8 @@ try {
 
   program.parse(process.argv);
 
-  if (program.args.length < 2) {
-    throw new Error('There should be two urls as an arguments');
+  if (program.args.length < 1) {
+    throw new Error('There should be at list one urls as an arguments');
   }
 
   const [firstUrl, secondUrl] = program.args;
