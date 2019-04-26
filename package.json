@@ -1,10 +1,10 @@
 {
-  "name": "puppeteer-compare",
+  "name": "site-recorder",
   "version": "0.0.1",
   "description": "Automatic performance compare tool",
-  "bin": "./bin/puppeteer-compare.js",
+  "bin": "./bin/site-recorder.js",
   "scripts": {
-    "example": "node ./src/cli.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
+    "example": "node ./bin/site-compare.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
     "example:gif": "npm run example -- --generate-gif",
     "example:video": "npm run example -- --generate-video",
     "example:full": "npm run example -- --generate-video --generate-gif",
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix-incubator/puppeteer-compare.git"
+    "url": "git+https://github.com/wix-incubator/site-recorder.git"
   },
   "keywords": [
     "puppeteer",
@@ -40,9 +40,9 @@
   "author": "Wix Incubator",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wix-incubator/puppeteer-compare/issues"
+    "url": "https://github.com/wix-incubator/site-recorder/issues"
   },
-  "homepage": "https://github.com/wix-incubator/puppeteer-compare#readme",
+  "homepage": "https://github.com/wix-incubator/site-recorder#readme",
   "dependencies": {
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
