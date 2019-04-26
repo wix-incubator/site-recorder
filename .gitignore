@@ -207,7 +207,7 @@ StyleCopReport.xml
 *.scc
 # For generated GIF files
 *.gif
-
+!example.gif
 # Chutzpah Test files
 _Chutzpah*
 

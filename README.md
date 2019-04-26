@@ -5,6 +5,9 @@
 ### Why
 `site-recorder` is a CLI tool for creating comparable image/video artefact. You can pass url and get GIF animation or video loading passed website from the first network request till time to interactive. It's not possible to write real video with for ex. WebRTC, because in that case we have to wait when our script will be loaded. Instead, we are using `puppeteer` and generated `trace.json` to get screenshots which demonstrate how site is loading.
 
+Example: [http://ronnyr34.wixsite.com/mysite-1](http://ronnyr34.wixsite.com/mysite-1)
+![](example.gif)
+
 ### Tech
 
 `site-recorder` uses a number of open source projects to work properly:
