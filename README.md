@@ -56,13 +56,7 @@ npm run example:full # generates both gif and video
 ### Development
 
 Want to contribute? Great!
-
-...
-
-
-### Todos
-- [ ] Write MORE Tests
-- [ ] ...
+Please take a look at opened [issues](https://github.com/wix-incubator/site-recorder/issues).
 
 License
 ----
