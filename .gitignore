@@ -450,3 +450,9 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder
 .mfractor/
+
+# Config for video file
+my_file_list.txt
+
+#Generated video
+*.mp4

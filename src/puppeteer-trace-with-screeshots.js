@@ -29,13 +29,12 @@ async function puppeteerTraceWithScreenshots(url, workDir, options = {width: 128
   });
 
   const page = await browser.newPage();
+  console.log('options:', options)
 
-  if (options.tracePerformance) {
-    await page._client.send('Emulation.clearDeviceMetricsOverride');
-    await page.tracing.start({path: `${workDir}/trace.json`, screenshots: true});
-    client = await page.target().createCDPSession();
-    await client.send('Performance.enable');
-  }
+  await page._client.send('Emulation.clearDeviceMetricsOverride');
+  await page.tracing.start({path: `${workDir}/trace.json`, screenshots: true});
+  client = await page.target().createCDPSession();
+  await client.send('Performance.enable');
 
   await page.goto(url, {waitUntil: 'networkidle2'});
 
@@ -87,7 +86,7 @@ async function puppeteerTraceWithScreenshots(url, workDir, options = {width: 128
   spinner.stop();
 
   return {
-    traceJsonPath: `../${workDir}/trace.json`,
+    traceJsonPath: `${workDir}/trace.json`,
     ...(!!performanceData && { performanceData }),
   };
 }
