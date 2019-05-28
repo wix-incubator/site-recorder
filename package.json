@@ -12,6 +12,9 @@
     "test:e2e": "npx jest e2e",
     "test:unit": "npx jest unit"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=6.5.0"
   },
