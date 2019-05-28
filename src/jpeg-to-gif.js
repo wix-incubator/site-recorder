@@ -21,10 +21,10 @@ const asyncGetPixels = util.promisify(getPixels);
  */
 async function addToGif(files) {
   try {
-    for(let i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       const pixels = await asyncGetPixels(files[i].fileName);
       gif.addFrame(pixels.data);
-      gif.setDelay(files[i].timeDiffWithPrev / 1000 );
+      gif.setDelay(files[i].timeDiffWithPrev / 1000);
       gif.read();
     }
     gif.finish();
@@ -34,11 +34,9 @@ async function addToGif(files) {
 }
 
 /**
- * @param {Object[]} files -Files pathes with time delay
- * @param {string} files[].fileName - path where jpeg files is located
- * @param {number} files[].timeDiffWithPrev - time for delay from previous frame in microseconds
+ * @param {{files: {fileName: string, timeDiffWithPrev: number}[]}} screenshotsResult - Files pathes with time delay
  */
-async function jpegToGifConverter(files) {
+async function jpegToGifConverter({ files }) {
   const spinner = ora('Converting screenshots files to GIF').start();
 
   try {
