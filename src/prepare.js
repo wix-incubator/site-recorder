@@ -1,7 +1,6 @@
 const chulk = require('chalk');
 const os = require('os');
 const checkAndCreateDirectory = require('./utils/check-and-create-directory');
-const concatenateVideos = require('./concatenate-videos');
 const cleanDir = require('./utils/clean-dir');
 
 async function prepare(urls) {
