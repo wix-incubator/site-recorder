@@ -4,6 +4,8 @@
   "description": "Automatic performance compare tool",
   "bin": "./bin/site-recorder.js",
   "scripts": {
+    "release": "wnpm-release",
+    "build": ":",
     "example": "node ./bin/site-recorder.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
     "example:gif": "npm run example -- --generate-gif",
     "example:video": "npm run example -- --generate-video",
@@ -60,5 +62,8 @@
     "rimraf": "^2.6.3",
     "tempdir": "^2.0.0",
     "update-notifier": "^2.5.0"
+  },
+  "devDependencies": {
+    "wnpm-ci": "^7.0.79"
   }
 }
