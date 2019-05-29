@@ -2,7 +2,8 @@ const ffmpeg = require('fluent-ffmpeg');
 const ora = require('ora');
 
 function concatenateVideos(firstVideo, secondVideo) {
-  const spinner = ora(`Concatenating videos: ${firstVideo} && ${secondVideo}`).start();
+  console.log(`\nConcatenating videos: ${firstVideo} && ${secondVideo}\n`);
+  const spinner = ora(`\nConcatenating videos: ${firstVideo} && ${secondVideo}\n`).start();
 
   const begin = Date.now();
 

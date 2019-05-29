@@ -1,9 +1,9 @@
 const fs = require('fs').promises;
 const ora = require('ora');
 const chalk = require('chalk');
-const median = require('./utils/median');
-const checkAndCreateDirectory = require('./utils/check-and-create-directory');
-const convertSnapshotTimeToRelative = require('./utils/convert-snapshot-time-to-relative');
+const median = require('../utils/median');
+const checkAndCreateDirectory = require('../utils/check-and-create-directory');
+const convertSnapshotTimeToRelative = require('../utils/convert-snapshot-time-to-relative');
 
 /**
  * @param {<traceJsonPath: string, directory: string>} taskResult - directory where trace.json is located
@@ -63,6 +63,7 @@ async function traceJsonToJpeg({ traceJsonPath, directory }) {
   spinner.stop();
   return {
     files,
+    directory,
     medianFps: median(traceScreenshots.map(el => el.timeDiffWithPrev)),
     totalSessionDuration:
       traceScreenshots[traceScreenshots.length - 1].timeFromStart,

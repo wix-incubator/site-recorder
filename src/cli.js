@@ -5,7 +5,7 @@ const updateNotifier = require('update-notifier');
 const ora = require('ora');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
-const buildCompairson = require('./buildCompairson');
+const buildCompairson = require('./tasks/build-compairson');
 
 updateNotifier({ pkg }).notify();
 

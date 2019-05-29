@@ -1,7 +1,7 @@
 const chulk = require('chalk');
 const os = require('os');
-const checkAndCreateDirectory = require('./utils/check-and-create-directory');
-const cleanDir = require('./utils/clean-dir');
+const checkAndCreateDirectory = require('../utils/check-and-create-directory');
+const cleanDir = require('../utils/clean-dir');
 
 async function generateFolders(urls) {
   console.log(chulk.green('Prepare temporary folder for sites compare'));
@@ -26,7 +26,7 @@ async function buildTasks(urls, workTmpDir) {
   const tasks = [];
 
   for (let i = 0; i < urls.length; i++) {
-    let traceScreenshotsDir = `${workTmpDir}/screenshots_${i}`;
+    let traceScreenshotsDir = `${workTmpDir}/site_${i}`;
 
     await checkAndCreateDirectory(traceScreenshotsDir);
     await cleanDir(traceScreenshotsDir);

@@ -1,8 +1,8 @@
-const puppeteerTraceWithScreenshots = require('./puppeteer-trace-with-screeshots');
+const puppeteerTraceWithScreenshots = require('../trace/puppeteer-trace-with-screeshots');
 
 /**
  * @param {Array.<{url: string, directory: string }>} tasks - url paired with dir to store its data
- * @returns {Promise<Promise[]>} - set of puppeteer trace results
+ * @returns {Promise<{url: string, directory: string, traceJsonPath: string, performanceData: object}[]>} - set of puppeteer trace results
  */
 function collectTraceData(tasks) {
   return Promise.all(tasks.map(generateScreenshots));

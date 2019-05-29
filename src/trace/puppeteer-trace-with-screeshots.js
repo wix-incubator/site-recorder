@@ -5,7 +5,7 @@ const {
   getTimeFromPerformanceMetrics,
   extractDataFromPerformanceTiming,
   extractDataFromPerformanceMetrics,
-} = require('./utils/puppeteer-helpers');
+} = require('../utils/puppeteer-helpers');
 
 /**
  * @param {string} url - with puppeteer will "trace"

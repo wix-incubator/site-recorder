@@ -1,29 +1,24 @@
 const fs = require('fs');
+const path = require('path');
 const ora = require('ora');
 const ffmpeg = require('fluent-ffmpeg');
-const { microsecondToSeconds } = require('./utils/microseconds-converter');
+const { microsecondToSeconds } = require('../utils/microseconds-converter');
 
 /**
  * @param {Object} screenshotsResult
- * @param {string} screenshotsResult.videoFilePath - video file path with name
  * @param {number} screenshotsResult.medianFps - video fps value
- * @param {Array.<{fileName: string, timeDiffWithPrev: number}>} screenshotsResult.screenshotsFiles
+ * @param {string} screenshotsResult.directory - temporary folder for comparison aggregation
+ * @param {Array.<{fileName: string, timeDiffWithPrev: number>} screenshotsResult.screenshotsFiles
  * @returns {Promise<void>}
  */
-async function jpegToVideoConverter({
-  files,
-  medianFps,
-  videoFilePath = 'video.mp4',
-}) {
-  const listFileName = 'my_file_list.txt';
+async function jpegToVideoConverter({ files, medianFps, directory }) {
+  const listFileName = path.join(directory, 'my_file_list.txt');
   const spinner = ora('Converting screenshots files to video...').start();
-
-  const preparedImageData = files.map(
-    ({ fileName, timeDiffWithPrev }) => ({
-      file: fileName,
-      duration: Math.round(microsecondToSeconds(timeDiffWithPrev) * 100) / 100,
-    }),
-  );
+  const videoFilePath = path.join(directory, 'video.mp4');
+  const preparedImageData = files.map(({ fileName, timeDiffWithPrev }) => ({
+    file: fileName,
+    duration: Math.round(microsecondToSeconds(timeDiffWithPrev) * 100) / 100,
+  }));
 
   const stream = fs.createWriteStream(listFileName);
   stream.once('open', () => {
@@ -37,15 +32,6 @@ async function jpegToVideoConverter({
     });
     stream.end();
   });
-
-  console.log(
-    '-- ScreenshotsFiles.length=',
-    preparedImageData.length,
-    files.length,
-  );
-  console.log('--  preparedImageData[0]=', preparedImageData[0]);
-  console.log('--  preparedImageData[2]=', preparedImageData[2]);
-  console.log('--  preparedImageData[5]=', preparedImageData[5]);
 
   return new Promise((resolve, reject) => {
     const begin = Date.now();
@@ -64,7 +50,7 @@ async function jpegToVideoConverter({
       .on('end', () => {
         spinner.succeed(`video.mp4 is created in ${Date.now() - begin}ms`);
         spinner.stop();
-        resolve();
+        resolve(videoFilePath);
       })
       .save(videoFilePath);
   });

@@ -1,6 +1,6 @@
-const generateFolders = require('./generateFolders');
-const collectTraceData = require('./collectTraceData');
-const extractImages = require('./extractImages');
+const generateFolders = require('./generate-folders');
+const collectTraceData = require('./collect-trace-data');
+const extractImages = require('./extract-images');
 const combine = require('./combine');
 
 /**
