@@ -3,7 +3,7 @@ const os = require('os');
 const checkAndCreateDirectory = require('./utils/check-and-create-directory');
 const cleanDir = require('./utils/clean-dir');
 
-async function prepare(urls) {
+async function generateFolders(urls) {
   console.log(chulk.green('Prepare temporary folder for sites compare'));
 
   const tmpdir = os.tmpdir();
@@ -39,4 +39,4 @@ async function buildTasks(urls, workTmpDir) {
   return tasks;
 }
 
-module.exports = prepare;
+module.exports = generateFolders;

@@ -5,7 +5,7 @@ const updateNotifier = require('update-notifier');
 const ora = require('ora');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
-const compare = require('./compare');
+const buildCompairson = require('./buildCompairson');
 
 updateNotifier({ pkg }).notify();
 
@@ -32,15 +32,17 @@ try {
     );
   }
 
+  // TODO check that 2 urls are provided
   const [firstUrl, secondUrl] = program.args;
+
 
   (async () => {
     const spinner = ora();
 
     try {
       const options = program.opts();
-      await compare([firstUrl, secondUrl], options);
-      spinner.succeed('All is done, search for .gif files');
+      await buildCompairson([firstUrl, secondUrl], options);
+      spinner.succeed('All is done');
       spinner.stop();
     } catch (e) {
       spinner.fail('\nSomething go wrong\n');
