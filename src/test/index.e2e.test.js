@@ -5,7 +5,7 @@ const FILE_GIF = './mygif.gif';
 
 jest.setTimeout(20000000);
 
-test('Check that the new gif file is created', () => {
+xtest('Check that the new gif file is created', () => {
   try {
     fs.accessSync(FILE_GIF); // check if file exists
     fs.unlinkSync(FILE_GIF); // before test remove gif if it's exists
