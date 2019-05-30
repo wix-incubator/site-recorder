@@ -4,6 +4,17 @@ const chalk = require('chalk');
 const median = require('../utils/median');
 const checkAndCreateDirectory = require('../utils/check-and-create-directory');
 const convertSnapshotTimeToRelative = require('../utils/convert-snapshot-time-to-relative');
+const sharp = require('sharp');
+
+async function withScreenshotDimentions(snap) {
+  const { width, height } = await sharp(new Buffer(snap.args.snapshot, 'base64')).metadata();
+
+  return {
+    ...snap,
+    width,
+    height,
+  };
+}
 
 /**
  * @param {<traceJsonPath: string, directory: string>} taskResult - directory where trace.json is located
@@ -44,12 +55,27 @@ async function traceJsonToJpeg({ traceJsonPath, directory }) {
 
   const screenshotsFileNamePad = traceScreenshots.length.toString().length;
 
-  const writeFilePromises = traceScreenshots.map(async (snap, index) => {
+  const traceScreenshotsWithWH = await Promise.all(traceScreenshots.map(withScreenshotDimentions));
+  const minHeight = Math.min( ...traceScreenshotsWithWH.map(ts => ts.height) );
+
+  const writeFilePromises = traceScreenshotsWithWH.map(async (snap, index) => {
     const fileName = `${directory}/screenshot${String(index).padStart(
       screenshotsFileNamePad,
       '0',
     )}.jpeg`;
-    await fs.writeFile(fileName, snap.args.snapshot, 'base64');
+    const snapshotBase64 = snap.args.snapshot;
+
+    if (snap.height !== minHeight) {
+      await sharp(new Buffer(snapshotBase64, 'base64'))
+        .resize(snap.width, minHeight, {
+          fit: 'cover',
+          position: 'left top'
+        })
+        .toFile(fileName);
+    } else {
+      await fs.writeFile(fileName, snapshotBase64, 'base64');
+    }
+
     return {
       fileName,
       timeDiffWithPrev: snap.timeDiffWithPrev,
