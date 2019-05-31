@@ -10,6 +10,7 @@
     "example2": "node ./bin/site-recorder.js https://itc.ua https://itc.ua https://itc.ua https://itc.ua --generate-video",
     "example:gif": "npm run example -- --generate-gif",
     "example:video": "npm run example -- --generate-video",
+    "example:wait": "npm run example:video -- --custom-script ../src/long-wait-task.js",
     "example:full": "npm run example -- --generate-video --generate-gif",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "npx jest e2e",

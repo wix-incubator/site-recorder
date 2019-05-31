@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const ora = require('ora');
-
+const customTask = require('../tasks/custom-task');
 const {
   getTimeFromPerformanceMetrics,
   extractDataFromPerformanceTiming,
@@ -14,33 +14,47 @@ const {
  * @param {number} options.width - window width
  * @param {number} options.height - window height
  * @param {boolean} options.tracePerformance - should performance metrics be collected
+ * @param {boolean} options.customScript - path to the script module that accepts page and returns a promise
  * @returns {Promise<{traceJsonPath: string, performanceData?:object }>}
  */
 
-async function puppeteerTraceWithScreenshots(url, workDir, options = {width: 1280, height: 720, tracePerformance: true}) {
+async function puppeteerTraceWithScreenshots(
+  url,
+  workDir,
+  options = { width: 1280, height: 720, tracePerformance: true },
+) {
   let performanceData = null;
   let client;
   const spinner = ora('Puppeteer generating trace JSON...').start();
 
   const browser = await puppeteer.launch({
-    args : [
-      `--window-size=${options.width},${options.height}`
-    ]
+    args: [`--window-size=${options.width},${options.height}`],
   });
 
   const page = await browser.newPage();
-  console.log('options:', options)
+  console.log('options:', options);
 
-  await page._client.send('Emulation.clearDeviceMetricsOverride');
-  await page.tracing.start({path: `${workDir}/trace.json`, screenshots: true});
   client = await page.target().createCDPSession();
   await client.send('Performance.enable');
+  await client.send('Emulation.clearDeviceMetricsOverride');
+  await page.tracing.start({
+    path: `${workDir}/trace.json`,
+    screenshots: true,
+  });
 
-  await page.goto(url, {waitUntil: 'networkidle2'});
+  await page.goto(
+    url,
+    options.customScript ? {} : { waitUntil: 'networkidle2' },
+  );
+
+  if (options.customScript) {
+    await customTask(page, options.customScript);
+  }
 
   if (options.tracePerformance) {
-    // const windowPerformanceEntriesJSON = await page.evaluate(() => JSON.stringify(window.performance.getEntries(), null, 2));
-    const windowPerformanceJSON = await page.evaluate(() => JSON.stringify(window.performance.toJSON(), null, 2));
+    const windowPerformanceJSON = await page.evaluate(() =>
+      JSON.stringify(window.performance.toJSON(), null, 2),
+    );
     const puppeteerPageMetrics = await page.metrics();
 
     let firstMeaningfulPaint = 0;
@@ -51,7 +65,7 @@ async function puppeteerTraceWithScreenshots(url, workDir, options = {width: 128
       windowPerformanceMetrics = await client.send('Performance.getMetrics');
       firstMeaningfulPaint = extractDataFromPerformanceMetrics(
         windowPerformanceMetrics,
-        'FirstMeaningfulPaint'
+        'FirstMeaningfulPaint',
       );
     }
 
@@ -68,10 +82,15 @@ async function puppeteerTraceWithScreenshots(url, workDir, options = {width: 128
           'loadEventEnd',
         ),
       },
-      windowPerformanceMetricsJSON: JSON.parse(JSON.stringify(windowPerformanceMetrics.metrics, null, 2)),
+      windowPerformanceMetricsJSON: JSON.parse(
+        JSON.stringify(windowPerformanceMetrics.metrics, null, 2),
+      ),
       windowPerformanceMetrics: {
         ...firstMeaningfulPaint,
-        ...extractDataFromPerformanceMetrics(windowPerformanceMetrics, 'DomContentLoaded'),
+        ...extractDataFromPerformanceMetrics(
+          windowPerformanceMetrics,
+          'DomContentLoaded',
+        ),
       },
     };
 
