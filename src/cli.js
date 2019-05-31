@@ -17,7 +17,7 @@ try {
     .usage('[options] <url1 ...> <url2 ...>')
     .arguments('[module]', 'prints module version from the node_modules')
     .option('-d, --debug', 'see full error messages, mostly for debugging')
-    .option('-g, --generate-gif', 'should gif be generated')
+    .option('-gif, --generate-gif', 'generate gif as additional output')
     .option(
       '-t, --timeout [navigation-timeout]',
       'navigation timeout for loading event in puppeter (30000ms by default)',
