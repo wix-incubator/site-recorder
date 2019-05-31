@@ -19,6 +19,12 @@ try {
     .option('-d, --debug', 'see full error messages, mostly for debugging')
     .option('-g, --generate-gif', 'should gif be generated')
     .option(
+      '-t, --timeout [navigation-timeout]',
+      'navigation timeout for loading event in puppeter (30000ms by default)',
+      value => parseInt(value),
+      30000,
+    )
+    .option(
       '-cs, --custom-script [path-to-file]',
       'add path to custom script that will execute once page is loaded',
     )
@@ -35,7 +41,7 @@ try {
     );
   }
   const options = program.opts();
-
+  console.dir(options);
   if (options.customScript) {
     options.customScript = adjustToRelative(options.customScript);
     if (!fs.existsSync(options.customScript)) {

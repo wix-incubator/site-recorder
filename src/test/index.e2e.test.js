@@ -18,6 +18,8 @@ test('Check that the new gif file is created', () => {
     'http://ronnyr34.wixsite.com/mysite-1',
     'http://ronnyr34.wixsite.com/mysite-1',
     '--generate-gif',
+    '--timeout',
+    '0',
   ]);
 
   return new Promise((resolve, reject) => {
