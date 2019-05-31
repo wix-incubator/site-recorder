@@ -1,21 +1,16 @@
-const jpegToGifConverter = require('../converters/jpeg-to-gif');
 const makeVideosAndConcatenate = require('../converters/make-videos');
+const videoToGif =  require('../converters/video-to-gif');
 /**
  * @param {Array.<{files: {fileName: string, timeDiffWithPrev: number, directory: string }[], }>} screenshotsResults - list of urls to trace
  * @param {Object} options - cli options
  * @returns {Promise<Promise[]>} - set of conversion processes
  */
 
-function combine(screenshotsResults, options) {
-  const converters = [
-    { enabled: options.generateGif, converter: jpegToGifConverter },
-    { enabled: options.generateVideo, converter: makeVideosAndConcatenate },
-  ];
-
-  // TODO Should we stop making video if gif has failed?
-  return Promise.all(converters
-    .filter(({ enabled }) => enabled)
-    .map(({ converter }) => converter(screenshotsResults, options)));
+async function combine(screenshotsResults, options) {
+  const videoFilePath = await makeVideosAndConcatenate(screenshotsResults, options);
+  if(options.generateGif) {
+    await videoToGif(videoFilePath);
+  }
 }
 
 module.exports = combine;
