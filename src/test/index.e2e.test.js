@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { spawn } = require('child_process');
-
-const FILE_GIF = './output.gif';
+const adjustToRelative = require('../utils/adjust-path-to-relative');
+const FILE_GIF = adjustToRelative('../../output.gif');
 
 jest.setTimeout(20000000);
 
