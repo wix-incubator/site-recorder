@@ -16,6 +16,7 @@ async function generateScreenshots({ url, directory }, options) {
     height: 720,
     tracePerformance: true,
     customScript: options.customScript,
+    timeout: options.timeout,
   });
 
   console.log(`\nClose session for "${url}"`);

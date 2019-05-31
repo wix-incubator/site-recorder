@@ -1,11 +1,11 @@
 const fs = require('fs');
 const { spawn } = require('child_process');
-
-const FILE_GIF = './mygif.gif';
+const adjustToRelative = require('../utils/adjust-path-to-relative');
+const FILE_GIF = adjustToRelative('../../output.gif');
 
 jest.setTimeout(20000000);
 
-xtest('Check that the new gif file is created', () => {
+test('Check that the new gif file is created', () => {
   try {
     fs.accessSync(FILE_GIF); // check if file exists
     fs.unlinkSync(FILE_GIF); // before test remove gif if it's exists
@@ -18,6 +18,8 @@ xtest('Check that the new gif file is created', () => {
     'http://ronnyr34.wixsite.com/mysite-1',
     'http://ronnyr34.wixsite.com/mysite-1',
     '--generate-gif',
+    '--timeout',
+    '0',
   ]);
 
   return new Promise((resolve, reject) => {

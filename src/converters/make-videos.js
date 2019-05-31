@@ -15,9 +15,7 @@ async function makeVideosAndConcatenate(screenshotResults, options) {
       jpegToVideoConverter(screenshotResult, options),
     ),
   );
-  if (screenshotResults.length === 2) {
-    return concatenateVideos(...videosFilePath);
-  }
+  return concatenateVideos(...videosFilePath);
 }
 
 module.exports = makeVideosAndConcatenate;

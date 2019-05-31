@@ -15,6 +15,7 @@ const {
  * @param {number} options.height - window height
  * @param {boolean} options.tracePerformance - should performance metrics be collected
  * @param {boolean} options.customScript - path to the script module that accepts page and returns a promise
+ * @param {number} options.timeout - navigation timeout for puppeter page goto method
  * @returns {Promise<{traceJsonPath: string, performanceData?:object }>}
  */
 
@@ -44,7 +45,9 @@ async function puppeteerTraceWithScreenshots(
 
   await page.goto(
     url,
-    options.customScript ? {} : { waitUntil: 'networkidle2' },
+    options.customScript
+      ? { timeout: options.timeout }
+      : { waitUntil: 'networkidle2', timeout: options.timeout },
   );
 
   if (options.customScript) {

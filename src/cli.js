@@ -17,8 +17,13 @@ try {
     .usage('[options] <url1 ...> <url2 ...>')
     .arguments('[module]', 'prints module version from the node_modules')
     .option('-d, --debug', 'see full error messages, mostly for debugging')
-    .option('-g, --generate-gif', 'should gif be generated')
-    .option('-v, --generate-video', 'should video be generated')
+    .option('-gif, --generate-gif', 'generate gif as additional output')
+    .option(
+      '-t, --timeout [navigation-timeout]',
+      'navigation timeout for loading event in puppeter (30000ms by default)',
+      value => parseInt(value),
+      30000,
+    )
     .option(
       '-cs, --custom-script [path-to-file]',
       'add path to custom script that will execute once page is loaded',
@@ -30,13 +35,13 @@ try {
 
   program.parse(process.argv);
 
-  if (program.args.length < 1) {
+  if (program.args.length < 2) {
     throw new Error(
-      'There should be at least one url as an arguments provided',
+      'There should be at least two urls as an arguments provided',
     );
   }
   const options = program.opts();
-
+  console.dir(options);
   if (options.customScript) {
     options.customScript = adjustToRelative(options.customScript);
     if (!fs.existsSync(options.customScript)) {
@@ -46,7 +51,6 @@ try {
     }
   }
 
-  // TODO check that 2 urls are provided
   const [firstUrl, secondUrl] = program.args;
 
   (async () => {
