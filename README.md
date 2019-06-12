@@ -46,15 +46,19 @@ Usage: site-recorder [options] <url1 ...> <url2 ...>
 ```
 
 Options:
-|                                     	|                                                                                             	|
-|-------------------------------------	|---------------------------------------------------------------------------------------------	|
-| -v,--version                        	| output the version number                                                                   	|
-| -d,--debug                          	| see full error messages, mostly for debugging                                               	|
-| -gif,--generate-gif                 	| generate gif as additional output                                                           	|
-| -t,--timeout [navigation-timeout]   	| navigation timeout for loading event in puppeteer (default: 30000)                          	|
-| -cs, --custom-script [path-to-file] 	| add path to custom script that will execute once page is loaded (receives page as argument) 	|
-| -bw, --disable-colors               	| minimize color and styling usage in output                                                  	|
-| -h,--help                          	| output usage information                                                                    	|                                                         |
+
+
+| Option | Description |
+|--------------------------------------|---------------------------------------------------------------------------------------------|
+| -v,--version | output the version number |
+| -d,--debug | see full error messages, mostly for debugging |
+| -gif,--generate-gif | generate gif as additional output |
+| -t,--timeout [navigation-timeout] | navigation timeout for loading event in puppeteer (default: 30000) |
+| -cs, --custom-script [path-to-file] | add path to custom script that will execute once page is loaded (receives page as argument) |
+| -bw, --disable-colors | minimize color and styling usage in output |
+| -h,--help | output usage information |
+
+
 ### Using of artifacts
 
 Both *output.mp4* and *output.gif* are extracted in the same folder as where command is executed. 
