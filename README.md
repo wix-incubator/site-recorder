@@ -53,6 +53,10 @@ Options:
 | -v,--version | output the version number |
 | -d,--debug | see full error messages, mostly for debugging |
 | -gif,--generate-gif | generate gif as additional output |
+| -W, --resolution-width [width] | define the resolution width in the screen recording |
+| -H, --resolution-height [height] | define the resolution height in the screen recording |
+| -D, --device [device] | define the device that will run the screen recording (Override resolution param |
+| -N, --device [network] | define the throttler that will emulate network slowdown |
 | -t,--timeout [navigation-timeout] | navigation timeout for loading event in puppeteer (default: 30000) |
 | -cs, --custom-script [path-to-file] | add path to custom script that will execute once page is loaded (receives page as argument) |
 | -bw, --disable-colors | minimize color and styling usage in output |
@@ -70,6 +74,11 @@ Install the dependencies and devDependencies and start the server.
 ```sh
 npm install
 npm run example:gif # generates both gif and video
+```
+
+### Installing the tool as globally
+```sh
+npm install -g .
 ```
 
 ### Development
