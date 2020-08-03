@@ -72,13 +72,8 @@ Both *output.mp4* and *output.gif* are extracted in the same folder as where com
 Install the dependencies and devDependencies and start the server.
 
 ```sh
-npm install
+npm install site-recorder -g
 npm run example:gif # generates both gif and video
-```
-
-### Installing the tool as globally
-```sh
-npm install -g .
 ```
 
 ### Development
