@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-- node   # Current stable, i.e. 14 in August, 2020
 - lts/*  # Most recent LTS version, i.e. 12 in August, 2020
 - 10
 sudo: required
