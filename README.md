@@ -80,6 +80,7 @@ npm run example:gif # generates both gif and video
 
 Want to contribute? Great!
 Please take a look at opened [issues](https://github.com/wix-incubator/site-recorder/issues).
+Related TeamCity: http://tc.dev.wixpress.com/viewType.html?buildTypeId=SiteRecorder_SiteRecorder_O
 
 License
 ----
