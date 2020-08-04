@@ -9,7 +9,7 @@
     "example": "node ./bin/site-recorder.js http://ronnyr34.wixsite.com/mysite-1 http://ronnyr34.wixsite.com/mysite-1?petri_ovr=specs.UseWixBoltRenderer:false",
     "example:gif": "npm run example -- --generate-gif",
     "example:wait": "npm run example -- --custom-script ../src/examples/long-wait-task.js",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit",
     "test:e2e": "npx jest e2e",
     "test:unit": "npx jest unit"
   },
