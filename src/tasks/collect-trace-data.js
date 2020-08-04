@@ -12,11 +12,13 @@ async function generateScreenshots({ url, directory }, options) {
   console.log(`\nStart session for "${url}"`);
 
   const result = await puppeteerTraceWithScreenshots(url, directory, {
-    width: 1280,
-    height: 720,
+    width: options.resolutionWidth,
+    height: options.resolutionHeight,
     tracePerformance: true,
     customScript: options.customScript,
     timeout: options.timeout,
+    device: options.device,
+    network: options.network,
   });
 
   console.log(`\nClose session for "${url}"`);

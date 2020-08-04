@@ -2,10 +2,10 @@ const puppeteer = require('puppeteer');
 const ora = require('ora');
 const customTask = require('../tasks/custom-task');
 const {
-  getTimeFromPerformanceMetrics,
   extractDataFromPerformanceTiming,
   extractDataFromPerformanceMetrics,
 } = require('../utils/puppeteer-helpers');
+const devices = require('puppeteer/DeviceDescriptors');
 
 /**
  * @param {string} url - with puppeteer will "trace"
@@ -19,23 +19,52 @@ const {
  * @returns {Promise<{traceJsonPath: string, performanceData?:object }>}
  */
 
+const DEFAULT_WIDTH = 1280;
+const DEFAULT_HEIGHT = 720;
+
 async function puppeteerTraceWithScreenshots(
-  url,
-  workDir,
-  options = { width: 1280, height: 720, tracePerformance: true },
+    url,
+    workDir,
+    options = {
+      width: DEFAULT_WIDTH,
+      height: DEFAULT_HEIGHT,
+      tracePerformance: true,
+      device: null,
+      customScript: false,
+      timeout: 3000,
+      network: undefined
+    },
 ) {
   let performanceData = null;
   let client;
   const spinner = ora('Puppeteer generating trace JSON...').start();
 
+  const width = options.width || DEFAULT_WIDTH;
+  const height = options.height || DEFAULT_HEIGHT;
   const browser = await puppeteer.launch({
-    args: [`--window-size=${options.width},${options.height}`],
+    args: [`--window-size=${width},${height}`],
   });
 
   const page = await browser.newPage();
-  console.log('options:', options);
+
+  if (options.device) {
+    console.log(`- Emulate as: ${options.device}`)
+    await page.emulate(devices[options.device]);
+  } else {
+    console.log(`- View Port width: ${width} height: ${height}`)
+    await page.setViewport({ width, height });
+  }
+
+  options.customScript && console.log(`- Custom Script:${options.customScript}`);
+  options.timeout && console.log(`- Timeout:${options.timeout}`);
 
   client = await page.target().createCDPSession();
+
+  if (options.network) {
+    console.log(`- Network Emulation:${options.network.name}`);
+    await client.send('Network.emulateNetworkConditions', options.network)
+  }
+
   await client.send('Performance.enable');
   await client.send('Emulation.clearDeviceMetricsOverride');
   await page.tracing.start({
@@ -44,10 +73,10 @@ async function puppeteerTraceWithScreenshots(
   });
 
   await page.goto(
-    url,
-    options.customScript
-      ? { timeout: options.timeout }
-      : { waitUntil: 'networkidle2', timeout: options.timeout },
+      url,
+      options.customScript
+          ? { timeout: options.timeout }
+          : { waitUntil: 'networkidle2', timeout: options.timeout },
   );
 
   if (options.customScript) {
@@ -56,7 +85,7 @@ async function puppeteerTraceWithScreenshots(
 
   if (options.tracePerformance) {
     const windowPerformanceJSON = await page.evaluate(() =>
-      JSON.stringify(window.performance.toJSON(), null, 2),
+        JSON.stringify(window.performance.toJSON(), null, 2),
     );
     const puppeteerPageMetrics = await page.metrics();
 
@@ -67,8 +96,8 @@ async function puppeteerTraceWithScreenshots(
       await page.waitFor(300);
       windowPerformanceMetrics = await client.send('Performance.getMetrics');
       firstMeaningfulPaint = extractDataFromPerformanceMetrics(
-        windowPerformanceMetrics,
-        'FirstMeaningfulPaint',
+          windowPerformanceMetrics,
+          'FirstMeaningfulPaint',
       );
     }
 
@@ -78,21 +107,21 @@ async function puppeteerTraceWithScreenshots(
       windowPerformanceJSON: JSON.parse(windowPerformanceJSON),
       windowPerformance: {
         ...extractDataFromPerformanceTiming(
-          JSON.parse(windowPerformanceJSON).timing,
-          'responseEnd',
-          'domInteractive',
-          'domContentLoadedEventEnd',
-          'loadEventEnd',
+            JSON.parse(windowPerformanceJSON).timing,
+            'responseEnd',
+            'domInteractive',
+            'domContentLoadedEventEnd',
+            'loadEventEnd',
         ),
       },
       windowPerformanceMetricsJSON: JSON.parse(
-        JSON.stringify(windowPerformanceMetrics.metrics, null, 2),
+          JSON.stringify(windowPerformanceMetrics.metrics, null, 2),
       ),
       windowPerformanceMetrics: {
         ...firstMeaningfulPaint,
         ...extractDataFromPerformanceMetrics(
-          windowPerformanceMetrics,
-          'DomContentLoaded',
+            windowPerformanceMetrics,
+            'DomContentLoaded',
         ),
       },
     };
