@@ -88,27 +88,3 @@ try {
   handleError(error, program.debug);
 }
 
-async function execute (urls, options) {
-  try {
-    await buildComparison(urls, options);
-    return null;
-  }
-  catch (e) {
-    return e;
-  }
-}
-
-function devices () {
-  return getDeviceList();
-}
-
-function networks () {
-  return getNetworkList();
-}
-
-module.exports = {
-  execute,
-  devices,
-  networks,
-};
-
