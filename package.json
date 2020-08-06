@@ -1,6 +1,6 @@
 {
   "name": "site-recorder",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Automatic performance compare tool",
   "bin": "./bin/site-recorder.js",
   "scripts": {
