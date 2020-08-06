@@ -7,7 +7,7 @@ const ora = require('ora');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
 const adjustToRelative = require('./utils/adjust-path-to-relative');
-const buildComparison = require('./tasks/build-Comparison');
+const buildComparison = require('./tasks/build-comparison');
 const { getNetworkList, getNetwork } = require("./utils/networkEmulator");
 const { getDeviceList, getDevice } = require("./utils/deviceEmulator");
 

@@ -1,4 +1,4 @@
-const buildComparison = require('./tasks/build-Comparison');
+const buildComparison = require('./tasks/build-comparison');
 const { getNetworkList } = require("./utils/networkEmulator");
 const { getDeviceList } = require("./utils/deviceEmulator");
 
