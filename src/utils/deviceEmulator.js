@@ -4,11 +4,11 @@ const getDeviceList = () => {
   const listOfDevices = Object.keys(devices);
   return listOfDevices
       .filter(deviceName => deviceName.length>3)
-      .map(deviceName => deviceName.replace(' ','_'));
+      .map(deviceName => deviceName.replace(/ /gi,'_'));
 };
 
 const getDevice = (deviceParam) => {
-  const deviceName = deviceParam.replace('_', ' ');
+  const deviceName = deviceParam.replace(/_/gi, ' ');
   const puppeteerDevice = devices[deviceName];
 
   if (!puppeteerDevice) {

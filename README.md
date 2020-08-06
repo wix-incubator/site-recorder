@@ -82,6 +82,36 @@ Want to contribute? Great!
 Please take a look at opened [issues](https://github.com/wix-incubator/site-recorder/issues).
 Related TeamCity: http://tc.dev.wixpress.com/viewType.html?buildTypeId=SiteRecorder_SiteRecorder_O
 
+# Using site recorder as Library
+
+Exposed several function to allow using site recorder as library for services.
+
+* execute [Default module] - execute the site recorder on two urls
+* devices - return array of devices 
+* networks - return array of networks 
+
+##### API 
+```sh
+exexute (urls, options)
+devices ()
+networks ()
+```
+
+| Name | Description |
+|----------------------|---------------------|
+| urls | Array of two urls that will be recorder |
+| options | resolution-width: [number] |
+| | resolution-height: [number] |
+| | device: [string] - valid value from devices |
+| | network: [string] - valid value from networks |
+| | timeout: [number] in millisecond |
+| | disable-colors: [boolean] |
+
+##### Installation
+```
+npm install site-recorder
+```
+
 License
 ----
 

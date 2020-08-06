@@ -7,7 +7,7 @@ const ora = require('ora');
 const pkg = require('../package.json');
 const handleError = require('./utils/handler-error');
 const adjustToRelative = require('./utils/adjust-path-to-relative');
-const buildCompairson = require('./tasks/build-compairson');
+const buildComparison = require('./tasks/build-Comparison');
 const { getNetworkList, getNetwork } = require("./utils/networkEmulator");
 const { getDeviceList, getDevice } = require("./utils/deviceEmulator");
 
@@ -73,7 +73,7 @@ try {
     const spinner = ora();
 
     try {
-      await buildCompairson([firstUrl, secondUrl], options);
+      await buildComparison([firstUrl, secondUrl], options);
       spinner.succeed('All is done');
       spinner.stop();
     } catch (e) {
@@ -87,3 +87,27 @@ try {
 } catch (error) {
   handleError(error, program.debug);
 }
+
+async function execute (urls, options) {
+  try {
+    await buildComparison(urls, options);
+    return null;
+  }
+  catch (e) {
+    return e;
+  }
+}
+
+function devices () {
+  return getDeviceList();
+}
+
+function networks () {
+  return getNetworkList();
+}
+
+module.exports = {
+  execute,
+  devices,
+  networks,
+};
