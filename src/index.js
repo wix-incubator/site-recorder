@@ -4,8 +4,8 @@ const { getDeviceList } = require("./utils/deviceEmulator");
 
 async function execute (urls, options) {
   try {
-    await buildComparison(urls, options);
-    return null;
+    const task = await buildComparison(urls, options);
+    return task;
   }
   catch (e) {
     return e;

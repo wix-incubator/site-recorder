@@ -8,12 +8,13 @@ const combine = require('./combine');
  * @param {Object} options - cli options
  * @returns {Promise<Promise[]>} - set of conversion processes
  */
-function buildComparison(urls, options) {
+async function buildComparison(urls, options) {
   // TODO curry actions with options argument
-  return generateFolders(urls)
-    .then(task => collectTraceData(task, options))
+  const task = await generateFolders(urls);
+  return collectTraceData(task, options)
     .then(traceResults => extractImages(traceResults, options))
-    .then(screenshotResults => combine(screenshotResults, options));
+    .then(screenshotResults => combine(screenshotResults, options))
+    .then(() => task);
 }
 
 module.exports = buildComparison;
