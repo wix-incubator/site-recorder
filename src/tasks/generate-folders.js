@@ -1,10 +1,10 @@
-const chulk = require('chalk');
+const chalk = require('chalk');
 const os = require('os');
 const checkAndCreateDirectory = require('../utils/check-and-create-directory');
 const cleanDir = require('../utils/clean-dir');
 
 async function generateFolders(urls) {
-  console.log(chulk.green('Prepare temporary folder for sites compare'));
+  console.log(chalk.green('Prepare temporary folder for sites compare'));
 
   const tmpdir = os.tmpdir();
   const workTmpDir = `${tmpdir}/site-recorder`;
