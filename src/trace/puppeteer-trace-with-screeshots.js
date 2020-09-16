@@ -23,17 +23,17 @@ const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
 
 async function puppeteerTraceWithScreenshots(
-    url,
-    workDir,
-    options = {
-      width: DEFAULT_WIDTH,
-      height: DEFAULT_HEIGHT,
-      tracePerformance: true,
-      device: null,
-      customScript: false,
-      timeout: 3000,
-      network: undefined
-    },
+  url,
+  workDir,
+  options = {
+    width: DEFAULT_WIDTH,
+    height: DEFAULT_HEIGHT,
+    tracePerformance: true,
+    device: null,
+    customScript: false,
+    timeout: 3000,
+    network: undefined
+  },
 ) {
   let performanceData = null;
   let client;
@@ -42,7 +42,11 @@ async function puppeteerTraceWithScreenshots(
   const width = options.width || DEFAULT_WIDTH;
   const height = options.height || DEFAULT_HEIGHT;
   const browser = await puppeteer.launch({
-    args: [`--window-size=${width},${height}`],
+    args: [
+      `--window-size=${width},${height}`,
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+    ],
   });
 
   const page = await browser.newPage();
@@ -73,10 +77,10 @@ async function puppeteerTraceWithScreenshots(
   });
 
   await page.goto(
-      url,
-      options.customScript
-          ? { timeout: options.timeout }
-          : { waitUntil: 'networkidle2', timeout: options.timeout },
+    url,
+    options.customScript
+      ? { timeout: options.timeout }
+      : { waitUntil: 'networkidle2', timeout: options.timeout },
   );
 
   if (options.customScript) {
@@ -85,7 +89,7 @@ async function puppeteerTraceWithScreenshots(
 
   if (options.tracePerformance) {
     const windowPerformanceJSON = await page.evaluate(() =>
-        JSON.stringify(window.performance.toJSON(), null, 2),
+      JSON.stringify(window.performance.toJSON(), null, 2),
     );
     const puppeteerPageMetrics = await page.metrics();
 
@@ -96,8 +100,8 @@ async function puppeteerTraceWithScreenshots(
       await page.waitFor(300);
       windowPerformanceMetrics = await client.send('Performance.getMetrics');
       firstMeaningfulPaint = extractDataFromPerformanceMetrics(
-          windowPerformanceMetrics,
-          'FirstMeaningfulPaint',
+        windowPerformanceMetrics,
+        'FirstMeaningfulPaint',
       );
     }
 
@@ -107,21 +111,21 @@ async function puppeteerTraceWithScreenshots(
       windowPerformanceJSON: JSON.parse(windowPerformanceJSON),
       windowPerformance: {
         ...extractDataFromPerformanceTiming(
-            JSON.parse(windowPerformanceJSON).timing,
-            'responseEnd',
-            'domInteractive',
-            'domContentLoadedEventEnd',
-            'loadEventEnd',
+          JSON.parse(windowPerformanceJSON).timing,
+          'responseEnd',
+          'domInteractive',
+          'domContentLoadedEventEnd',
+          'loadEventEnd',
         ),
       },
       windowPerformanceMetricsJSON: JSON.parse(
-          JSON.stringify(windowPerformanceMetrics.metrics, null, 2),
+        JSON.stringify(windowPerformanceMetrics.metrics, null, 2),
       ),
       windowPerformanceMetrics: {
         ...firstMeaningfulPaint,
         ...extractDataFromPerformanceMetrics(
-            windowPerformanceMetrics,
-            'DomContentLoaded',
+          windowPerformanceMetrics,
+          'DomContentLoaded',
         ),
       },
     };
