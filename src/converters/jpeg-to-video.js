@@ -18,7 +18,7 @@ async function jpegToVideoConverter({ files, medianFps, directory }) {
   const preparedImageData = files.map(({ fileName, timeDiffWithPrev }) => ({
     file: fileName,
     duration: Math.round(microsecondToSeconds(timeDiffWithPrev) * 100) / 100,
-  }));
+  })).filter(f => f.duration < 5); //w puppeteer@5 some timeDiffWithPrev returned too large
 
   const stream = fs.createWriteStream(listFileName);
   stream.once('open', () => {

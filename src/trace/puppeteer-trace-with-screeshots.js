@@ -5,7 +5,7 @@ const {
   extractDataFromPerformanceTiming,
   extractDataFromPerformanceMetrics,
 } = require('../utils/puppeteer-helpers');
-const devices = require('puppeteer/DeviceDescriptors');
+const devices = require('puppeteer').devices;
 
 /**
  * @param {string} url - with puppeteer will "trace"

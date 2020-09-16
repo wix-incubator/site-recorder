@@ -7,7 +7,7 @@ const convertSnapshotTimeToRelative = require('../utils/convert-snapshot-time-to
 const sharp = require('sharp');
 
 async function withScreenshotDimentions(snap) {
-  const { width, height } = await sharp(new Buffer(snap.args.snapshot, 'base64')).metadata();
+  const { width, height } = await sharp(new Buffer.from(snap.args.snapshot, 'base64')).metadata();
 
   return {
     ...snap,
@@ -66,7 +66,7 @@ async function traceJsonToJpeg({ traceJsonPath, directory }) {
     const snapshotBase64 = snap.args.snapshot;
 
     if (snap.height !== minHeight) {
-      await sharp(new Buffer(snapshotBase64, 'base64'))
+      await sharp(new Buffer.from(snapshotBase64, 'base64'))
         .resize(snap.width, minHeight, {
           fit: 'cover',
           position: 'left top'

@@ -1,4 +1,4 @@
-const devices = require('puppeteer/DeviceDescriptors');
+const devices = require('puppeteer').devices;
 
 const getDeviceList = () => {
   const listOfDevices = Object.keys(devices);
